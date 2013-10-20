@@ -44,6 +44,9 @@ Chess.Board.SelectedPiece = null;
  */
 
 Chess.Board.StateCode = 0;
+
+// 0: white; 100: black;
+Chess.Board.MyColor = 0;
 // This will run asychronize with the class (run right after jQuery is loaded)
 $(function() {
     Chess.Board.Instance = $('#chess_board');
@@ -79,11 +82,27 @@ Chess.Board.Render = function() {
     // Bind click event
     Chess.Board.Instance.off('click.selectpiece', 'td');
     Chess.Board.Instance.on('click.selectpiece', 'td', function() {
+        // Check WAITTING status
+        if (Chess.Board.StateCode === STATUS_WAITING) {
+            return;
+        }
+
         var obj = $(this);
         var _code = Number(obj.attr('code'));
         var _col = Number(obj.attr('col'));
         var _row = Number(obj.attr('row'));
+
+
+
         if (Chess.Board.StateCode === STATUS_READY) {
+            // Check color
+            if (_code !== -1) {
+                if (!(((Chess.Board.MyColor > 50) && (_code > 50)) ||
+                        ((Chess.Board.MyColor <= 50) && (_code <= 50)))) {
+                    return;
+                }
+            }
+
             // User selected a piece
             Chess.Board.SelectedPiece = {code: _code, position: {col: _col, row: _row}};
             var piece;
@@ -140,25 +159,29 @@ Chess.Board.Render = function() {
         } else if (Chess.Board.StateCode === STATUS_MOVING) {
             // User is looking for a position to make a move
             if (obj.hasClass('highlight')) {
-                if (obj.hasClass('red')) {
-                    // Win a competitor's piece
-                    if (Chess.Board.SelectedPiece !== null) {
-                        console.log('Take: [' + _row + ',' + _col + ']');
+                // Make a normal move
+                if (Chess.Board.SelectedPiece !== null) {
+                    console.log('Move to: [' + _row + ',' + _col + ']');
+
+                    // Check if the [to] is the same as [from]
+                    if ((Math.abs(Chess.Board.SelectedPiece.position.col - _col) +
+                            Math.abs(Chess.Board.SelectedPiece.position.row - _row)) !== 0) {
                         Chess.Board.Move(Chess.Board.SelectedPiece.code,
                                 Chess.Board.SelectedPiece.position, {row: _row, col: _col});
+
+                        // Wait for your next turn...
+                        Chess.Board.StateCode = STATUS_WAITING;
                     } else {
-                        console.log("Something wrong, Chess.Board.SelectedPiece should be not null now");
+                        // Invalid move (user have clicked in a piece itself)
+                        // Re-draw the board
+                        Chess.Board.ClearHighLight();
+                        // Set status to READY
+                        Chess.Board.StateCode = STATUS_READY;
                     }
                 } else {
-                    // Make a normal move
-                    if (Chess.Board.SelectedPiece !== null) {
-                        console.log('Move to: [' + _row + ',' + _col + ']');
-                        Chess.Board.Move(Chess.Board.SelectedPiece.code,
-                                Chess.Board.SelectedPiece.position, {row: _row, col: _col});
-                    } else {
-                        console.log("Something wrong, Chess.Board.SelectedPiece should be not null now");
-                    }
+                    console.log("Something wrong, Chess.Board.SelectedPiece should be not null now");
                 }
+
             } else {
                 // Invalid move (user have clicked in a empty cell)
                 // Re-draw the board
@@ -168,10 +191,9 @@ Chess.Board.Render = function() {
                 console.log('Invalid move!');
             }
             Chess.Board.SelectedPiece = null;
+            Chess.Board.Render();
         }
     });
-    // Set board status to READY
-    Chess.Board.StateCode = STATUS_READY;
 };
 Chess.Board.ClearHighLight = function() {
     return Chess.Board.Instance.find('td').removeClass('highlight red');
@@ -198,5 +220,18 @@ Chess.Board.Move = function(code, from, to) {
         Chess.Board.CurrentState[from.row - 1][from.col - 1] = -1;
         Chess.Board.CurrentState[to.row - 1][to.col - 1] = code;
     }
+    Chess.Board.SelectedPiece = null;
     Chess.Board.Render();
+    Push();
+};
+
+Chess.Board.SetActive = function(active) {
+    if (active) {
+        $('#protect').hide();
+    } else {
+        $('#protect').show();
+    }
+};
+Chess.Board.CloseWaiting = function() {
+    $('#waiting').hide();
 };
