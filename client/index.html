@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Chess!</title>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="js/lib/jquery-1.10.2.min.js"></script>
+        <script src="js/Data.js"></script>
+        <script src="js/Chess.Board.js"></script>
+        <script src="js/Piece.Pawn.js"></script>
+        <script>
+            $(function() {
+                Chess.Board.CurrentState = DEFAULT_BOARD;
+                Chess.Board.Render();
+            });
+        </script>
+
+    </head>
+    <body>
+        <div id="chess_board">
+
+        </div>
+    </body>
+</html>
