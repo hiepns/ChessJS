@@ -31,7 +31,7 @@ Piece.Pawn.prototype = {
      */
     generateMoves: function Piece_Pawn_generateMoves() {
         //this.availableMoves = [];
-        this.availableMoves = [{col: 1, row: 1}, {col: 2, row: 3, red: true}, {col: 5, row: 6}];
+        this.availableMoves = [{col: this.col, row: this.row, mode: 'me'}, {col: 1, row: 1}, {col: 2, row: 3, mode: 'take'}, {col: 5, row: 6}];
     },
     /**
      * Set piece's position in the board
@@ -49,12 +49,17 @@ Piece.Pawn.prototype = {
      */
     showAvailableMoves: function Piece_Pawn_showAvailableMoves() {
         $.each(this.availableMoves, function(index, position) {
-            if (typeof position.red === 'undefined') {
+            if (typeof position.mode === 'undefined') {
                 // This is a move
                 Chess.Board.GetPosition(position).addClass('highlight');
             } else {
-                // This is a move and win an other piece
-                Chess.Board.GetPosition(position).addClass('highlight red');
+                if (position.mode === 'me') {
+                    // this is not a really move, just to mark this is itself.
+                    Chess.Board.GetPosition(position).addClass('highlight');
+                } else if (position.mode === 'take') {
+                    // This is a move and win an other piece
+                    Chess.Board.GetPosition(position).addClass('highlight red');
+                }
             }
         });
     }
