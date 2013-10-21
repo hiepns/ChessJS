@@ -1,4 +1,7 @@
 #!/bin/env node
+
+var port    = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+
 var DEFAULT_BOARD = [[98, 96, 97, 99, 100, 97, 96, 98],
     [95, 95, 95, 95, 95, 95, 95, 95],
     [-1, -1, -1, -1, -1, -1, -1, -1],
@@ -13,7 +16,7 @@ var app = require('http').createServer(handler)
         , io = require('socket.io').listen(app)
         , fs = require('fs');
 
-app.listen(8818);
+app.listen(port);
 function handler(req, res) {
     fs.readFile(__dirname + '/client/' + (req.url.substring(0, 3) !== '/rs' || req.url === '/' ? 'index.html' : req.url),
             function(err, data) {
