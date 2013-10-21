@@ -30,6 +30,9 @@ Chess.Board.CurrentState = [[-1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1]];
+
+Chess.Board.MovedPieces = [];
+
 /**
  * Selected Piece Position
  * @type {code: Integer, position: {row: Integer, col: Integer}}
@@ -150,7 +153,7 @@ Chess.Board.Render = function() {
             if (piece !== null) {
                 piece.setPosition(_col, _row);
                 piece.generateMoves();
-                piece.showAvailableMoves();
+                Piece.showAvailableMoves(piece.availableMoves);
                 // Moving
                 Chess.Board.StateCode = STATUS_MOVING;
             } else {
@@ -181,7 +184,6 @@ Chess.Board.Render = function() {
                 } else {
                     console.log("Something wrong, Chess.Board.SelectedPiece should be not null now");
                 }
-
             } else {
                 // Invalid move (user have clicked in a empty cell)
                 // Re-draw the board
@@ -219,6 +221,31 @@ Chess.Board.Move = function(code, from, to) {
     } else {
         Chess.Board.CurrentState[from.row - 1][from.col - 1] = -1;
         Chess.Board.CurrentState[to.row - 1][to.col - 1] = code;
+        Chess.Board.MovedPieces.push(from.row + "-" + from.col);
+
+        // Rule: Nhap thanh
+        if (Chess.Board.GetPosition(to).hasClass('change')) {
+            if (to.col === 3) {
+                Chess.Board.CurrentState[to.row - 1][3] = Chess.Board.CurrentState[to.row - 1][0];
+                Chess.Board.CurrentState[to.row - 1][0] = -1;
+            } else if (to.col === 7) {
+                Chess.Board.CurrentState[to.row - 1][5] = Chess.Board.CurrentState[to.row - 1][7];
+                Chess.Board.CurrentState[to.row - 1][7] = -1;
+            }
+        }
+
+        // Rule: Phong hau
+        if (code === 5 || code === 100 - 5) {
+            if (to.row === 1 || to.row === 8) {
+                if (code < 50) {
+                    Chess.Board.CurrentState[to.row - 1][to.col - 1] = 1;  // TODO: select here
+                } else {
+                    Chess.Board.CurrentState[to.row - 1][to.col - 1] = 99; // TODO: select here
+                }
+            }
+        }
+        
+        // Rule: an chot qua duong
     }
     Chess.Board.SelectedPiece = null;
     Chess.Board.Render();
@@ -234,4 +261,17 @@ Chess.Board.SetActive = function(active) {
 };
 Chess.Board.CloseWaiting = function() {
     $('#waiting').hide();
+};
+/**
+ * Return a code of the right position: use: Chess.Board.GetCode(8,8)
+ * @param {type} row
+ * @param {type} col
+ * @returns {unresolved}
+ */
+Chess.Board.GetCode = function(row, col) {
+    if (row < 1 || row > 8 || col < 1 || col > 8) {
+        return null;
+    } else {
+        return Chess.Board.CurrentState[row - 1][col - 1];
+    }
 };
