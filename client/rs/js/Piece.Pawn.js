@@ -25,6 +25,8 @@ Piece.showAvailableMoves = function Piece_Pawn_showAvailableMoves(availableMoves
                 Chess.Board.GetPosition(position).addClass('highlight red');
             } else if (position.mode === 'change') {
                 Chess.Board.GetPosition(position).addClass('highlight change');
+            } else if (position.mode === 'pawntake') {
+                Chess.Board.GetPosition(position).addClass('highlight pawntake');
             }
         }
     });
@@ -82,8 +84,6 @@ Piece.Pawn.prototype = {
             // If the forward is empty
             if (Chess.Board.GetCode(_row + 1, _col) === -1) {
                 this.availableMoves.push({col: _col, row: _row + 1});
-
-
                 // If the piece is in the first row
                 if (_row === 2) {
                     // If the forward 2 is empty
@@ -110,7 +110,20 @@ Piece.Pawn.prototype = {
                     this.availableMoves.push({col: _col - 1, row: _row + 1, mode: 'take'})
                 }
             }
-
+            
+            // TODO: Check rule "An chot qua duong"
+            // Right
+            if (Chess.Board.GetCode(_row + 1, _col + 1) === -1 && // If the cell is empty
+                Chess.Board.PawnFirstMove.indexOf(_row + "-" + (_col + 1)) > -1) { // And 
+                this.availableMoves.push({col: _col + 1, row: _row + 1, mode: 'pawntake'});
+            }
+            // Left
+            if (Chess.Board.GetCode(_row + 1, _col - 1) === -1 && // If the cell is empty
+                Chess.Board.PawnFirstMove.indexOf(_row + "-" + (_col - 1)) > -1) { // And 
+                this.availableMoves.push({col: _col - 1, row: _row + 1, mode: 'pawntake'});
+            }
+            
+            
 
         } else {
             // White Pawn
@@ -144,7 +157,20 @@ Piece.Pawn.prototype = {
                     this.availableMoves.push({col: _col - 1, row: _row - 1, mode: 'take'});
                 }
             }
-
+            
+            // TODO: Check rule "An chot qua duong"
+            // Right
+            //console.log("_row - 1 = " + (_row - 1) + " | _col + 1 = " + (_col + 1) + " | code = " + Chess.Board.GetCode(_row - 1, _col + 1) + " isFirst: " + Chess.Board.PawnFirstMove.indexOf(_row + "-" + (_col + 1)));
+            if (Chess.Board.GetCode(_row - 1, _col + 1) === -1 && // If the cell is empty
+                Chess.Board.PawnFirstMove.indexOf(_row + "-" + (_col + 1)) > -1) { // And 
+                this.availableMoves.push({col: _col + 1, row: _row - 1, mode: 'pawntake'});
+            }
+            // Left
+            if (Chess.Board.GetCode(_row - 1, _col - 1) === -1 && // If the cell is empty
+                Chess.Board.PawnFirstMove.indexOf(_row + "-" + (_col - 1)) > -1) { // And 
+                this.availableMoves.push({col: _col - 1, row: _row - 1, mode: 'pawntake'});
+            }
+            
         }
     },
     /**

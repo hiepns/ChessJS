@@ -33,6 +33,10 @@ Chess.Board.CurrentState = [[-1, -1, -1, -1, -1, -1, -1, -1],
 
 Chess.Board.MovedPieces = [];
 
+// Save row-col of the pawn that in dangerous
+Chess.Board.PawnFirstMove = [];
+
+
 /**
  * Selected Piece Position
  * @type {code: Integer, position: {row: Integer, col: Integer}}
@@ -219,9 +223,43 @@ Chess.Board.Move = function(code, from, to) {
     if (Chess.Board.CurrentState[from.row - 1][from.col - 1] !== code) {
         console.log('Wrong code at position: ' + from);
     } else {
+
+        // Delete state before set code to -1
+        if (code === 5 || code === 95) {
+            var _index = Chess.Board.PawnFirstMove.indexOf(to.row + "-" + to.col);
+            if (_index > -1) {
+                Chess.Board.PawnFirstMove.splice(_index, 1);
+            }
+        }
         Chess.Board.CurrentState[from.row - 1][from.col - 1] = -1;
+
         Chess.Board.CurrentState[to.row - 1][to.col - 1] = code;
+
         Chess.Board.MovedPieces.push(from.row + "-" + from.col);
+
+        // State for "Nhap thanh"
+        var _pawn_from, _pawn_to;
+        if (code === 5) {
+            // White pawn
+            _pawn_from = 7;
+            _pawn_to = 5;
+        } else if (code === 95) {
+            // Black pawn
+            _pawn_from = 2;
+            _pawn_to = 4;
+        }
+        if (from.row === _pawn_from && to.row === _pawn_to) {
+            if (Chess.Board.PawnFirstMove.indexOf(to.row + "-" + to.col) === -1) {
+                Chess.Board.PawnFirstMove.push(to.row + "-" + to.col);
+            }
+        } else {
+            var _index = Chess.Board.PawnFirstMove.indexOf(from.row + "-" + from.col);
+            if (_index > -1) {
+                Chess.Board.PawnFirstMove.splice(_index, 1);
+            }
+        }
+
+
 
         // Rule: Nhap thanh
         if (Chess.Board.GetPosition(to).hasClass('change')) {
@@ -237,15 +275,52 @@ Chess.Board.Move = function(code, from, to) {
         // Rule: Phong hau
         if (code === 5 || code === 100 - 5) {
             if (to.row === 1 || to.row === 8) {
+
+                var _newpiece = "";
+                var _newcode = -1;
+                while (_newpiece === null || _newcode === -1) {
+                    _newpiece = prompt("Enter your piece (queen, bishop, knight, rook)", "queen");
+                    _newpiece = _newpiece.toLowerCase();
+                    switch (_newpiece) {
+                        case "queen":
+                            _newcode = 1;
+                            break;
+                        case "bishop":
+                            _newcode = 3;
+                            break;
+                        case "knight":
+                            _newcode = 4;
+                            break;
+                        case "rook":
+                            _newcode = 2;
+                            break;
+                        default:
+                            _newcode = -1;
+                    }
+                }
+
                 if (code < 50) {
-                    Chess.Board.CurrentState[to.row - 1][to.col - 1] = 1;  // TODO: select here
+                    Chess.Board.CurrentState[to.row - 1][to.col - 1] = _newcode;
                 } else {
-                    Chess.Board.CurrentState[to.row - 1][to.col - 1] = 99; // TODO: select here
+                    _newcode = 100 - _newcode;
+                    Chess.Board.CurrentState[to.row - 1][to.col - 1] = _newcode;
                 }
             }
         }
-        
+
         // Rule: an chot qua duong
+        if (Chess.Board.GetPosition(to).hasClass('pawntake')) {
+            if (code === 5) {
+                // White
+                Chess.Board.CurrentState[to.row + 1 - 1][to.col - 1] = -1;
+                // col, row + 1
+            } else if (code === 95) {
+                // black
+                Chess.Board.CurrentState[to.row - 1 - 1][to.col - 1] = -1;
+                // col, row - 1
+            }
+        }
+
     }
     Chess.Board.SelectedPiece = null;
     Chess.Board.Render();

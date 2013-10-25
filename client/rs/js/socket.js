@@ -12,12 +12,13 @@ socket.on('youareblack', function() {
     Chess.Board.MyColor = 100;
 });
 
-socket.on('roomState', function(roomState) {
+socket.on('roomState', function(roomState, pawnstate) {
     if (typeof localStorage[roomName] !== 'undefined') {
         Chess.Board.SetActive(true);
     }
     Chess.Board.CloseWaiting();
     Chess.Board.CurrentState = roomState;
+    Chess.Board.PawnFirstMove = pawnstate;
     Chess.Board.Render();
 });
 socket.on('yourturn', function(myturn) {
@@ -27,6 +28,12 @@ socket.on('yourturn', function(myturn) {
         Chess.Board.StateCode = STATUS_WAITING;
     }
 });
+socket.on('resetGame', function() {
+    // Reset rules to initiate state.
+    Chess.Board.PawnFirstMove = [];
+    Chess.Board.MovedPieces = [];
+});
+
 socket.on('youareplayer', function() {
     localStorage[roomName] = true;
     Chess.Board.SetActive(true);
@@ -35,7 +42,7 @@ socket.on('youareplayer', function() {
 socket.emit('join', roomName);
 
 function Push() {
-    socket.emit(socket.emit('roomState', roomName, Chess.Board.CurrentState));
+    socket.emit(socket.emit('roomState', roomName, Chess.Board.CurrentState, Chess.Board.PawnFirstMove));
 }
 function ResetGame() {
     socket.emit(socket.emit('resetGame', roomName));

@@ -49,10 +49,10 @@ io.sockets.on('connection', function(socket) {
                 changeTurn(room);
                 
                 // Send room state for all
-                io.sockets.in(room).emit('roomState', roomInfoList[room].state);
+                io.sockets.in(room).emit('roomState', roomInfoList[room].state, []);
             } else {
                 // Guest joining or player refresh page, send roomState for him
-                socket.emit('roomState', roomInfoList[room].state);
+                socket.emit('roomState', roomInfoList[room].state, []);
             }
         }
 
@@ -67,19 +67,20 @@ io.sockets.on('connection', function(socket) {
         console.log('leaving room', room);
         socket.leave(room);
     });
-    socket.on('roomState', function(room, state) {
+    socket.on('roomState', function(room, state, pawnstate) {
         if (typeof roomInfoList[room] !== 'undefined') {
             // Save the state
             roomInfoList[room].state = state;
             // Send to all client in room
-            io.sockets.in(room).emit('roomState', roomInfoList[room].state);
+            io.sockets.in(room).emit('roomState', roomInfoList[room].state, pawnstate);
             changeTurn(room);
         }
     });
     socket.on('resetGame', function(room) {
         if (typeof roomInfoList[room] !== 'undefined') {
             roomInfoList[room].state = DEFAULT_BOARD;
-            io.sockets.in(room).emit('roomState', roomInfoList[room].state);
+            io.sockets.in(room).emit('roomState', roomInfoList[room].state, []);
+            io.sockets.in(room).emit('resetGame', roomInfoList[room].state, []);
             turn = 1;
             changeTurn(room);
         }

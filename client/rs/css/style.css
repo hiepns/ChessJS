@@ -19,11 +19,17 @@
     background:-moz-linear-gradient(top, #fff, #89B5F8) !important;
     background: -webkit-gradient(linear,0 0, 0 100%, from(#fff), to(#89B5F8)) !important;
 }
+#chess_board td.highlight.pawntake {
+    background:#fff !important;
+    background:-moz-linear-gradient(top, #fff, #FF0875) !important;
+    background: -webkit-gradient(linear,0 0, 0 100%, from(#fff), to(#FF0875)) !important;  
+}
 #chess_board td.highlight.change {
     background:#fff !important;
     background:-moz-linear-gradient(top, #fff, #FCD96C) !important;
     background: -webkit-gradient(linear,0 0, 0 100%, from(#fff), to(#FCD96C)) !important;  
 }
+
 #chess_board td.highlight.red {
     background:#fff !important;
     background:-moz-linear-gradient(top, #fff, #FC786C) !important;
