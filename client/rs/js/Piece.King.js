@@ -161,6 +161,7 @@ Piece.King.prototype = {
             // If white
 
             // Left Rook
+            // "No one in the way"
             if ((Chess.Board.MovedPieces.indexOf("8-5") === -1) &&
                     (Chess.Board.MovedPieces.indexOf("8-1") === -1)) {
                 if ((Chess.Board.GetCode(8, 2) === -1) &&
@@ -169,8 +170,13 @@ Piece.King.prototype = {
                     this.availableMoves.push({row: 8, col: 3, mode: 'change'});
                 }
             }
+            // "No one look in the way"
+            // TODO:
+
+
 
             // Right Rook
+            // "No one in the way"
             if ((Chess.Board.MovedPieces.indexOf("8-5") === -1) &&
                     (Chess.Board.MovedPieces.indexOf("8-8") === -1)) {
                 if ((Chess.Board.GetCode(8, 6) === -1) &&
@@ -178,11 +184,14 @@ Piece.King.prototype = {
                     this.availableMoves.push({row: 8, col: 7, mode: 'change'});
                 }
             }
+            // "No one look in the way"
+            // TODO:
 
         } else {
             // If black
 
             // Left Rook
+            // "No one in the way"
             if ((Chess.Board.MovedPieces.indexOf("1-5") === -1) &&
                     (Chess.Board.MovedPieces.indexOf("1-1") === -1)) {
                 if ((Chess.Board.GetCode(1, 2) === -1) &&
@@ -191,8 +200,11 @@ Piece.King.prototype = {
                     this.availableMoves.push({row: 1, col: 3, mode: 'change'});
                 }
             }
-
+            // "No one look in the way"
+            // TODO:
+            
             // Right Rook
+            // "No one in the way"
             if ((Chess.Board.MovedPieces.indexOf("1-5") === -1) &&
                     (Chess.Board.MovedPieces.indexOf("1-8") === -1)) {
                 if ((Chess.Board.GetCode(1, 6) === -1) &&
@@ -200,6 +212,8 @@ Piece.King.prototype = {
                     this.availableMoves.push({row: 1, col: 7, mode: 'change'});
                 }
             }
+            // "No one look in the way"
+            // TODO:
 
         }
 
