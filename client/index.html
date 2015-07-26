@@ -17,6 +17,9 @@
             $(function() {
                 //Chess.Board.CurrentState = DEFAULT_BOARD;
                 Chess.Board.Render();
+
+                $('#currentRoom').html(location.hash || "home");
+                $('#invite-link').html(location.href);
             });
 
 
@@ -26,6 +29,7 @@
     <body>
         <div id="waiting">
             <h1>Waiting for your competitor...</h1>
+            <p>Invite friend to play: <b id="invite-link"></b></p>
         </div>
         <div id="protect">
         </div>
@@ -36,9 +40,21 @@
             <input type="button" onclick="ResetGame()" value="Reset Game"/>
         </div>
         <div id="rooms">
-            <h3>Rooms:</h3>
+            <p>You are in: <b id="currentRoom"></b> room</p>
+            <h3>Room list:</h3>
             <div id="list_room">
                 
+            </div>
+            <br/>
+            <h3>Go to other room:</h3>
+            <div>
+                Room name: <input type="text" id="roomname"/> <input type="button" onclick="gotoroom()" value="Go"/>
+                <script>
+                    function gotoroom() {
+                        location.hash = $('#roomname').val();
+                        location.reload();
+                    }
+                </script>
             </div>
         </div>
     </body>
