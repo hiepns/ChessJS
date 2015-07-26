@@ -1,24 +1,36 @@
 {
-  "name": "ChessJS",
+  "name": "OpenShift-Sample-App",
   "version": "1.0.0",
-  "description": "ChessJS =======",
-  "main": "chessServer.js",
+  "description": "OpenShift Sample Application",
+  "keywords": [
+    "OpenShift",
+    "Node.js",
+    "application",
+    "openshift"
+  ],
+  "author": {
+    "name": "OpenShift",
+    "email": "ramr@example.org",
+    "url": "http://www.openshift.com/"
+  },
+  "homepage": "http://www.openshift.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openshift/origin-server"
+  },
+
+  "engines": {
+    "node": ">= 0.6.0",
+    "npm": ">= 1.0.0"
+  },
+
   "dependencies": {
+    "express": "~3.4.4",
     "socket.io": "^0.9.17"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "chessServer.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/trungdq88/ChessJS.git"
-  },
-  "author": "Trung Dinh Quang",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/trungdq88/ChessJS/issues"
-  },
-  "homepage": "https://github.com/trungdq88/ChessJS"
+  "bundleDependencies": [],
+
+  "private": true,
+  "main": "server.js"
 }

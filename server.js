@@ -9,20 +9,22 @@ var DEFAULT_BOARD = [[98, 96, 97, 99, 100, 97, 96, 98],
 
 
 var app = require('http').createServer(handler)
-        , io = require('socket.io').listen(app)
-        , fs = require('fs');
-
-app.listen(8818);
+    , io = require('socket.io').listen(app)
+    , fs = require('fs');
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+app.listen(port, server_ip_address);
 function handler(req, res) {
+
     fs.readFile(__dirname + '/client/' + (req.url.substring(0, 3) !== '/rs' || req.url === '/' ? 'index.html' : req.url),
-            function(err, data) {
-                if (err) {
-                    res.writeHead(500);
-                    return res.end('Error loading resources');
-                }
-                res.writeHead(200);
-                res.end(data);
-            });
+        function(err, data) {
+            if (err) {
+                res.writeHead(500);
+                return res.end('Error loading resources');
+            }
+            res.setHeader('Content-Type', 'text/html');
+            res.end(data);
+        });
 }
 
 
@@ -47,7 +49,7 @@ io.sockets.on('connection', function(socket) {
                 io.sockets.clients(room)[1].emit('youareplayer');
                 io.sockets.clients(room)[1].emit('youareblack');
                 changeTurn(room);
-                
+
                 // Send room state for all
                 io.sockets.in(room).emit('roomState', roomInfoList[room].state, []);
             } else {
