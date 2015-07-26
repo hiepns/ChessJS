@@ -11,9 +11,8 @@ var DEFAULT_BOARD = [[98, 96, 97, 99, 100, 97, 96, 98],
 var app = require('http').createServer(handler)
     , io = require('socket.io').listen(app)
     , fs = require('fs');
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
-app.listen(port, server_ip_address);
+var port = process.env.PORT || 5000
+app.listen(port);
 function handler(req, res) {
 
     fs.readFile(__dirname + '/client/' + (req.url.substring(0, 3) !== '/rs' || req.url === '/' ? 'index.html' : req.url),
