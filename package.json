@@ -1,0 +1,23 @@
+{
+  "name": "ChessJS",
+  "version": "1.0.0",
+  "description": "ChessJS =======",
+  "main": "chessServer.js",
+  "dependencies": {
+    "socket.io": "^0.9.17"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trungdq88/ChessJS.git"
+  },
+  "author": "Trung Dinh Quang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/trungdq88/ChessJS/issues"
+  },
+  "homepage": "https://github.com/trungdq88/ChessJS"
+}
